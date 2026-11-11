@@ -1,4 +1,6 @@
 # 4.Execution_of_NetworkCommands
+## Name : SASHTITHA.K
+## Reg.NO: 212225230253
 ## AIM :Use of Network commands in Real Time environment
 ## Software : Command Prompt And Network Protocol Analyzer
 ## Procedure: To do this EXPERIMENT- follows these steps:
@@ -26,7 +28,54 @@ This commands includes
 • Other IP Commands e.g. show ip route etc.
 <BR>
 
+## PROGRAM :
+## client.py
+```
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 8000))
+
+while True:
+    ip = input("Enter the website you want to ping (or type 'exit' to quit): ")
+    s.send(ip.encode('utf-8'))
+    if ip.lower() == 'exit':
+        break
+    print(s.recv(4096).decode('utf-8'))
+
+s.close()
+```
+## server.py
+```
+import socket
+from pythonping import ping
+
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
+print("Server listening on port 8000...")
+c, addr = s.accept()
+print(f"Connection from {addr}")
+
+while True:
+    try:
+        hostname = c.recv(1024).decode('utf-8')
+        if not hostname or hostname.lower() == 'exit':
+            print("Client disconnected.")
+            break
+        response = ping(hostname, verbose=False, count=4)
+        c.send(str(response).encode('utf-8'))
+    except Exception as e:
+        c.send(f"Ping failed: {e}".encode('utf-8'))
+
+c.close()
+```
 ## Output
+client.py
+<img width="1487" height="921" alt="image" src="https://github.com/user-attachments/assets/2d33cb0b-f484-47b1-9550-c7ab16900c91" />
+server.py
+<img width="1466" height="936" alt="image" src="https://github.com/user-attachments/assets/c8428329-74a0-457c-b107-fad07865bdd5" />
+
 
 ## Result
 Thus Execution of Network commands Performed 
